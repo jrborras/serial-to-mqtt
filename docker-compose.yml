@@ -1,0 +1,12 @@
+version: '3'
+services:
+  lora_client:
+    build: .
+    container_name: lora_client
+    restart: unless-stopped
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0" # Ensure the serial port is exposed
+    env_file:
+      - .env  # Reference the .env file here
+    volumes:
+      - ./app:/app  # Mount the working directory
