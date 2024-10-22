@@ -23,7 +23,7 @@ This project implements a Python-based containerized application that reads JSON
 ```
 .
 ├── app/app.py            # Main Python script to capture and send serial data
-├── requirements.txt      # Python dependencies (pyserial, paho-mqtt)
+├── app/requirements.txt  # Python dependencies (pyserial, paho-mqtt)
 ├── app/.env              # Environment variables for MQTT configuration
 ├── Dockerfile            # Dockerfile to build the Python container
 ├── docker-compose.yml    # Docker Compose file to run the container
