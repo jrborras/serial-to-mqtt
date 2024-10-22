@@ -4,7 +4,6 @@ This project implements a Python-based containerized application that reads JSON
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
 - [How it Works](#how-it-works)
 - [Getting Started](#getting-started)
@@ -19,22 +18,15 @@ This project implements a Python-based containerized application that reads JSON
 - [Contributing](#contributing)
 - [License](#license)
 
-## Prerequisites
-
-Before starting, make sure you have the following installed:
-
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-
 ## Project Structure
 
 ```
 .
+├── app/app.py            # Main Python script to capture and send serial data
+├── requirements.txt      # Python dependencies (pyserial, paho-mqtt)
+├── app/.env              # Environment variables for MQTT configuration
 ├── Dockerfile            # Dockerfile to build the Python container
 ├── docker-compose.yml    # Docker Compose file to run the container
-├── .env                  # Environment variables for MQTT configuration
-├── app.py             # Main Python script to capture and send serial data
-├── requirements.txt      # Python dependencies (pyserial, paho-mqtt)
 └── README.md             # Project documentation
 ```
 
@@ -173,7 +165,3 @@ services:
     volumes:
       - ./app:/app  # Mount the working directory
 ```
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
