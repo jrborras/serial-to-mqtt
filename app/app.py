@@ -5,6 +5,14 @@ import paho.mqtt.client as mqtt
 import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,  # Set to DEBUG to see all messages; use INFO for general operation
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 # Serial port settings
 SERIAL_PORT = '/dev/ttyACM0'
@@ -29,24 +37,24 @@ def connect_mqtt():
     try:
         mqtt_client.connect(MQTT_BROKER, MQTT_PORT, 60)
         mqtt_client.loop_start()  # Start the loop to process network traffic
-        print(f"Connected to MQTT Broker at {MQTT_BROKER}:{MQTT_PORT}")
+        logger.info(f"Connected to MQTT Broker at {MQTT_BROKER}:{MQTT_PORT}")
     except Exception as e:
-        print(f"Failed to connect to MQTT Broker: {e}")
+        logger.error(f"Failed to connect to MQTT Broker: {e}")
         time.sleep(5)  # Retry connection after 5 seconds
 
 def send_to_mqtt(data):
     try:
         mqtt_client.publish(MQTT_TOPIC, data)
-        print(f"Sent to MQTT: {data}")
+        logger.info(f"Sent to MQTT: {data}")
     except Exception as e:
-        print(f"Failed to send data to MQTT: {e}")
+        logger.error(f"Failed to send data to MQTT: {e}")
 
 # Main loop to read from serial port and send to MQTT
 def main():
     try:
         # Initialize serial communication
         ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
-        print(f"Listening to serial port: {SERIAL_PORT}")
+        logger.info(f"Listening to serial port: {SERIAL_PORT}")
 
         while True:
             if ser.in_waiting > 0:
@@ -54,9 +62,8 @@ def main():
                 try:
                     # Try to parse the received data as JSON
                     json_data = json.loads(serial_data)
-                    print(f"Received JSON data: {json_data}")
+                    logger.debug(f"Received JSON data: {json_data}")
                     timestamp = datetime.now(ZoneInfo(TIME_ZONE)).isoformat()
-                    # timestamp = datetime.now(timezone.utc).isoformat()
                     dict = {
                         "data": json_data,
                         "timestamp": timestamp
@@ -65,16 +72,16 @@ def main():
                     
                 except json.JSONDecodeError:
                     # Ignore non-JSON data
-                    print("Received data is not valid JSON, ignoring...")
+                    logger.warning("Received data is not valid JSON, ignoring...")
                     pass
 
     except serial.SerialException as e:
-        print(f"Serial error: {e}")
+        logger.error(f"Serial error: {e}")
         time.sleep(5)   # Retry connecting to the serial port after 5 seconds
         main()          # Retry by calling main again to reconnect
 
     except KeyboardInterrupt:
-        print("Exiting...")
+        logger.info("Exiting...")
         mqtt_client.loop_stop()
         mqtt_client.disconnect()
         ser.close()
@@ -85,3 +92,4 @@ if __name__ == "__main__":
 
     # Run the main loop
     main()
+
