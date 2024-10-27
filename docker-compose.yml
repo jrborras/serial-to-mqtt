@@ -1,8 +1,8 @@
 version: '3'
 services:
-  lora_client:
+  serial_to_mqtt:
     build: .
-    container_name: lora_client
+    container_name: serial_to_mqtt
     restart: unless-stopped
     devices:
       - "/dev/ttyACM0:/dev/ttyACM0" # Ensure the serial port is exposed
